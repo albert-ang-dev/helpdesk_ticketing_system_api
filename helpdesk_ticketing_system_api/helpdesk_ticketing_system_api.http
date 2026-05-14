@@ -1,6 +1,19 @@
 @helpdesk_ticketing_system_api_HostAddress = http://localhost:5121
 
-GET {{helpdesk_ticketing_system_api_HostAddress}}/weatherforecast/
-Accept: application/json
+###### http file
+
+## EMPLOYEES
+
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/employees
+
+###
+
+POST {{helpdesk_ticketing_system_api_HostAddress}}/api/employees
+Content-Type: application/json
+
+{
+  "firstName":"Albert",
+  "lastName":"Ang"
+}
 
 ###
