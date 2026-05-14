@@ -10,6 +10,8 @@ namespace helpdesk_ticketing_system_api.data
         }
 
         public DbSet<Employee> Employees { get; set; }
-        
+        public DbSet<Technician> Technicians { get; set; }
+        public DbSet<HelpdeskTicket> Tickets { get; set; }
+
     }
 }

@@ -6,14 +6,83 @@
 
 GET {{helpdesk_ticketing_system_api_HostAddress}}/api/employees
 
+
+###
+
+@employeeid=string
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/employees/{{employeeid}}
+
 ###
 
 POST {{helpdesk_ticketing_system_api_HostAddress}}/api/employees
 Content-Type: application/json
 
 {
-  "firstName":"Albert",
-  "lastName":"Ang"
+  "firstName": "string",
+  "lastName": "string",
 }
+
+###
+
+DELETE {{helpdesk_ticketing_system_api_HostAddress}}/api/employees/{{employeeid}}
+
+###
+
+
+## TECHNICIANS
+
+
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/technicians
+
+###
+
+@technicianid=0
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/technicians/{{technicianid}}
+
+###
+
+POST {{helpdesk_ticketing_system_api_HostAddress}}/api/technicians
+Content-Type: application/json
+
+{
+  "firstName": "Joe",
+  "lastName": "Paladino",
+}
+
+###
+
+DELETE {{helpdesk_ticketing_system_api_HostAddress}}/api/technicians/{technicianid}
+
+###
+
+
+## TICKETS
+
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets
+
+###
+# GET TICKETS BY EMPLOYEE ID
+
+@empId=0
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets/{{empId}}
+
+###
+
+# GET TICKET BY TICKET ID
+@ticketid=0
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets/{{ticketid}}
+
+###
+
+POST {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets
+Content-Type: application/json
+
+{
+  //HelpdeskTicket
+}
+
+###
+
+DELETE {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets/{ticketid}
 
 ###

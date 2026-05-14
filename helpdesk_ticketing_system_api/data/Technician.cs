@@ -2,15 +2,13 @@
 
 namespace helpdesk_ticketing_system_api.data
 {
-    public class Employee
+    public class Technician
     {
         [Key]
-        public int employeeID { get; set; }
+        public int technicianID { get; set; }
         public string firstName { get; set; }
         public string lastName { get; set; }
 
-        public List<HelpdeskTicket> tickets { get; set; } // navigation property to the tickets created by the employee
+        public List<HelpdeskTicket> tickets { get; set; } // navigation property to the tickets assigned to the technician
     }
-
-
 }
