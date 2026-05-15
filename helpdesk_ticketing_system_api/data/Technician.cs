@@ -9,6 +9,7 @@ namespace helpdesk_ticketing_system_api.data
         public string firstName { get; set; }
         public string lastName { get; set; }
 
-        public List<HelpdeskTicket> tickets { get; set; } // navigation property to the tickets assigned to the technician
+        public List<HelpdeskTicket>? tickets { get; set; } = new();
+
     }
 }

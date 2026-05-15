@@ -12,7 +12,8 @@ namespace helpdesk_ticketing_system_api.data
         public int technicianID { get; set; } // technician assigned to the ticket
         public int employeeID { get; set; } // requester
 
-        public Employee employee { get; set; }
-        public Technician technician { get; set; }
+        public Employee? employee { get; set; }
+        public Technician? technician { get; set; }  
+
     }
 }

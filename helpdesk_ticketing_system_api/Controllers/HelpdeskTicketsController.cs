@@ -14,80 +14,171 @@ public class HelpdeskTicketsController : ControllerBase
 
     // GET: api/HelpdeskTicket
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<HelpdeskTicket>>> GetHelpdeskTicket()
+    public async Task<IActionResult> GetHelpdeskTicket()
     {
-        return await _context.Tickets.ToListAsync();
+        var tickets = await _context.Tickets.Select(t => new
+        {
+            t.ticketID,
+            t.ticketTitle,
+            t.ticketDescription,
+            t.ticketStatus,
+            t.employeeID,
+            t.technicianID
+        }).ToListAsync();
+
+        return Ok(tickets);
     }
 
     // GET: api/HelpdeskTicket/5
     [HttpGet("{ticketid}")]
-    public async Task<ActionResult<HelpdeskTicket>> GetHelpdeskTicket(int ticketid)
+    public async Task<IActionResult> GetHelpdeskTicket(int ticketid)
     {
-        var helpdeskticket = await _context.Tickets.FindAsync(ticketid);
-
-        if (helpdeskticket == null)
+        //var helpdeskticket = await _context.Tickets.FindAsync(ticketid);
+        var tt = await _context.Tickets.Select(t => new
         {
-            return NotFound();
-        }
-
-        return helpdeskticket;
+            t.ticketID,
+            t.ticketTitle,
+            t.ticketDescription,
+            t.ticketStatus,
+            t.employeeID,
+            t.technicianID
+        }).FirstOrDefaultAsync(t => t.ticketID == ticketid);
+        return Ok(tt);
     }
 
 
-    // get tickets of a specific employee
-    [HttpGet("{empId}")]
-    public async Task<ActionResult<IEnumerable<HelpdeskTicket>>> GetHelpdeskTicketByEmployee(int empId)
+    [HttpGet("status/pending")]
+    public async Task<IActionResult> GetHelpdeskTicketStatusPending()
     {
-        IEnumerable<HelpdeskTicket> helpdesktickets = await _context.Tickets.Where(t => t.employeeID == empId).ToListAsync();
-        if (helpdesktickets == null)
+        //var helpdeskticket = await _context.Tickets.FindAsync(ticketid);
+        var tt = await _context.Tickets.Where(t=> t.ticketStatus=="Pending")
+            .Select(t => new
         {
-            return BadRequest();
-        };
-
-        return Ok(helpdesktickets);
+            t.ticketID,
+            t.ticketTitle,
+            t.ticketDescription,
+            t.ticketStatus,
+            t.employeeID,
+            t.technicianID
+        }).ToListAsync();
+        return Ok(tt);
     }
 
-    // PUT: api/HelpdeskTicket/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPut("{ticketid}")]
-    public async Task<IActionResult> PutHelpdeskTicket(int? ticketid, HelpdeskTicket helpdeskticket)
+    [HttpGet("status/done")]
+    public async Task<IActionResult> GetHelpdeskTicketStatusDone()
     {
-        if (ticketid != helpdeskticket.ticketID)
-        {
-            return BadRequest();
-        }
-
-        _context.Entry(helpdeskticket).State = EntityState.Modified;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!HelpdeskTicketExists(ticketid))
+        //var helpdeskticket = await _context.Tickets.FindAsync(ticketid);
+        var tt = await _context.Tickets.Where(t => t.ticketStatus == "Done")
+            .Select(t => new
             {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
+                t.ticketID,
+                t.ticketTitle,
+                t.ticketDescription,
+                t.ticketStatus,
+                t.employeeID,
+                t.technicianID
+            }).ToListAsync();
+        return Ok(tt);
     }
+
+    [HttpGet("employee/{empid}")]
+    public async Task<IActionResult> GetHelpdeskTicketByEmployeeId(int empid)
+    {
+        //var helpdeskticket = await _context.Tickets.FindAsync(ticketid);
+        var tt = await _context.Tickets.Where(t => t.employeeID == empid)
+            .Select(t => new
+            {
+                t.ticketID,
+                t.ticketTitle,
+                t.ticketDescription,
+                t.ticketStatus,
+                t.employeeID,
+                t.technicianID
+            }).ToListAsync();
+        return Ok(tt);
+    }
+
+
+
+    [HttpGet("technician/{tecid}")]
+    public async Task<IActionResult> GetHelpdeskTicketByTechnicianId(int tecid)
+    {
+        //var helpdeskticket = await _context.Tickets.FindAsync(ticketid);
+        var tt = await _context.Tickets.Where(t => t.technicianID == tecid)
+            .Select(t => new
+            {
+                t.ticketID,
+                t.ticketTitle,
+                t.ticketDescription,
+                t.ticketStatus,
+                t.employeeID,
+                t.technicianID
+            }).ToListAsync();
+        return Ok(tt);
+    }
+
 
     // POST: api/HelpdeskTicket
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
     public async Task<ActionResult<HelpdeskTicket>> PostHelpdeskTicket(HelpdeskTicket helpdeskticket)
     {
+        var selectedTicketToUpdate = await _context.Tickets.FirstOrDefaultAsync(t => t.ticketID == helpdeskticket.ticketID);
+
+        if(selectedTicketToUpdate != null)
+        {
+            return BadRequest("There is already same ticket ID");
+        };
+
         _context.Tickets.Add(helpdeskticket);
         await _context.SaveChangesAsync();
-
         return CreatedAtAction("GetHelpdeskTicket", new { ticketid = helpdeskticket.ticketID }, helpdeskticket);
     }
+
+
+
+    [HttpPatch("{id}/status")]
+    public async Task<IActionResult> UpdateTicketStatus(int id, [FromBody] string newStatus)
+    {
+        // 1. Fetch the record from PostgreSQL
+        var ticket = await _context.Tickets.FindAsync(id);
+
+        if (ticket == null)
+        {
+            return NotFound($"Ticket with ID {id} not found.");
+        }
+
+        // 2. Update ONLY the specific field
+        ticket.ticketStatus = newStatus;
+
+        // 3. Save changes
+        // EF Core tracks the change and only sends an UPDATE for the changed column
+        await _context.SaveChangesAsync();
+
+        return Ok("Status updated successfully");
+    }
+
+    [HttpPatch("{id}/technician")]
+    public async Task<IActionResult> UpdateTicketTechnician(int id, [FromBody] int newTechnician)
+    {
+        // 1. Fetch the record from PostgreSQL
+        var ticket = await _context.Tickets.FindAsync(id);
+
+        if (ticket == null)
+        {
+            return NotFound($"Ticket with ID {id} not found.");
+        }
+
+        // 2. Update ONLY the specific field
+        ticket.technicianID = newTechnician;
+
+        // 3. Save changes
+        // EF Core tracks the change and only sends an UPDATE for the changed column
+        await _context.SaveChangesAsync();
+
+        return Ok("Technician updated successfully");
+    }
+
 
     // DELETE: api/HelpdeskTicket/5
     [HttpDelete("{ticketid}")]
@@ -110,3 +201,4 @@ public class HelpdeskTicketsController : ControllerBase
         return _context.Tickets.Any(e => e.ticketID == ticketid);
     }
 }
+

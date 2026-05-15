@@ -9,7 +9,8 @@ namespace helpdesk_ticketing_system_api.data
         public string firstName { get; set; }
         public string lastName { get; set; }
 
-        public List<HelpdeskTicket> tickets { get; set; } // navigation property to the tickets created by the employee
+        public List<HelpdeskTicket>? tickets { get; set; } = new();
+
     }
 
 

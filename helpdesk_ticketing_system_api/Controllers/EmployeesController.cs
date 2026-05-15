@@ -14,62 +14,39 @@ public class EmployeesController : ControllerBase
 
     // GET: api/Employee
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Employee>>> GetEmployee()
+    public async Task<IActionResult> GetEmployee()
     {
-        return await _context.Employees.ToListAsync();
+        var employees = await _context.Employees.Select(e => new 
+        {
+            e.employeeID,
+            e.firstName,
+            e.lastName,
+        }).ToListAsync();   
+
+        return Ok(employees);
     }
 
     // GET: api/Employee/5
     [HttpGet("{employeeid}")]
-    public async Task<ActionResult<Employee>> GetEmployee(int employeeid)
+    public async Task<IActionResult> GetEmployee(int employeeid)
     {
-        var employee = await _context.Employees.FindAsync(employeeid);
-
-        if (employee == null)
+        var employees = await _context.Employees.Select(e => new
         {
-            return NotFound();
-        }
+            e.employeeID,
+            e.firstName,
+            e.lastName,
+        }).FirstOrDefaultAsync(e => e.employeeID == employeeid);
 
-        return employee;
+        return Ok(employees);
     }
 
-    // PUT: api/Employee/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPut("{employeeid}")]
-    public async Task<IActionResult> PutEmployee(int? employeeid, Employee employee)
-    {
-        if (employeeid != employee.employeeID)
-        {
-            return BadRequest();
-        }
-
-        _context.Entry(employee).State = EntityState.Modified;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!EmployeeExists(employeeid))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
-    }
+   
 
     // POST: api/Employee
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
     public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
     {
-        employee.employeeID = _context.Employees.Count() + 1;
         _context.Employees.Add(employee);
         await _context.SaveChangesAsync();
 

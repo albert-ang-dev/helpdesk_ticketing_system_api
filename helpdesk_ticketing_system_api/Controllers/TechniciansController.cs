@@ -14,23 +14,30 @@ public class TechniciansController : ControllerBase
 
     // GET: api/Technician
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Technician>>> GetTechnician()
+    public async Task<IActionResult> GetTechnician()
     {
-        return await _context.Technicians.ToListAsync();
+        var technicians = await _context.Technicians.Select(tc => new
+        {
+            tc.technicianID,
+            tc.firstName,
+            tc.lastName,
+        }).ToListAsync();
+
+        return Ok(technicians);
     }
 
     // GET: api/Technician/5
     [HttpGet("{technicianid}")]
-    public async Task<ActionResult<Technician>> GetTechnician(int technicianid)
+    public async Task<IActionResult> GetTechnician(int technicianid)
     {
-        var technician = await _context.Technicians.FindAsync(technicianid);
-
-        if (technician == null)
+        var technicians = await _context.Technicians.Select(tc => new
         {
-            return NotFound();
-        }
+            tc.technicianID,
+            tc.firstName,
+            tc.lastName,
+        }).ToListAsync();
 
-        return technician;
+        return Ok(technicians);
     }
 
     // PUT: api/Technician/5
@@ -69,7 +76,6 @@ public class TechniciansController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Technician>> PostTechnician(Technician technician)
     {
-        technician.technicianID = _context.Technicians.Count() + 1;
         _context.Technicians.Add(technician);
         await _context.SaveChangesAsync();
 

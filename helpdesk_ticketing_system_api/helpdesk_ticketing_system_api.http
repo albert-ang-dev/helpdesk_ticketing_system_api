@@ -2,77 +2,28 @@
 
 ###### http file
 
-## EMPLOYEES
-
-GET {{helpdesk_ticketing_system_api_HostAddress}}/api/employees
-
-
-###
-
-@employeeid=string
-GET {{helpdesk_ticketing_system_api_HostAddress}}/api/employees/{{employeeid}}
-
-###
-
-POST {{helpdesk_ticketing_system_api_HostAddress}}/api/employees
-Content-Type: application/json
-
-{
-  "firstName": "string",
-  "lastName": "string",
-}
-
-###
-
-DELETE {{helpdesk_ticketing_system_api_HostAddress}}/api/employees/{{employeeid}}
-
-###
-
-
-## TECHNICIANS
-
-
-GET {{helpdesk_ticketing_system_api_HostAddress}}/api/technicians
-
-###
-
-@technicianid=0
-GET {{helpdesk_ticketing_system_api_HostAddress}}/api/technicians/{{technicianid}}
-
-###
-
-POST {{helpdesk_ticketing_system_api_HostAddress}}/api/technicians
-Content-Type: application/json
-
-{
-  "firstName": "Joe",
-  "lastName": "Paladino",
-}
-
-###
-
-DELETE {{helpdesk_ticketing_system_api_HostAddress}}/api/technicians/{technicianid}
-
-###
-
-
-## TICKETS
-
+############################################################################################ TICKETS
+## To get all helpdesk tickets
 GET {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets
 
-###
-# GET TICKETS BY EMPLOYEE ID
-
-@empId=0
-GET {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets/{{empId}}
-
-###
-
-# GET TICKET BY TICKET ID
+### To get a specific helpdesk ticket by ID
 @ticketid=0
 GET {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets/{{ticketid}}
 
-###
+#### To get tickets by status=pending
+
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets/status/pending
+
+### To get tickets by status=done
+
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets/status/done
+
+### To get tickets by employee ID
+
+@empid=0
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets/employee/{{empid}}
+
+### To create a new helpdesk ticket
 
 POST {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets
 Content-Type: application/json
@@ -81,8 +32,83 @@ Content-Type: application/json
   //HelpdeskTicket
 }
 
-###
+### To update the status of a helpdesk ticket
+
+@id=0
+PATCH {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets/{{id}}/status
+Content-Type: application/json
+
+"string"
+
+### To assign a technician to a helpdesk ticket
+
+PATCH {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets/{{id}}/technician
+Content-Type: application/json
+
+0
+
+### Delete a helpdesk ticket
+
 
 DELETE {{helpdesk_ticketing_system_api_HostAddress}}/api/helpdesktickets/{ticketid}
+
+###
+
+############################################################################################ EMPLOYEES
+## To get all employees
+
+
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/employees
+
+### To get a specific employee by ID
+
+
+@employeeid=0
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/employees/{{employeeid}}
+
+### Delete an employee
+
+
+DELETE {{helpdesk_ticketing_system_api_HostAddress}}/api/employees/{employeeid}
+
+### Add a new employee
+
+
+
+POST {{helpdesk_ticketing_system_api_HostAddress}}/api/employees
+Content-Type: application/json
+
+{
+  //Employee
+}
+
+###
+
+############################################################################################ TECHNICIANS
+## To get all technicians
+
+
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/technicians
+
+###  To get a specific employee by ID
+
+
+@technicianid=0
+GET {{helpdesk_ticketing_system_api_HostAddress}}/api/technicians/{{technicianid}}
+
+### Delete a Technician
+
+
+DELETE {{helpdesk_ticketing_system_api_HostAddress}}/api/technicians/{technicianid}
+
+### Add a new technician
+
+
+POST {{helpdesk_ticketing_system_api_HostAddress}}/api/technicians
+Content-Type: application/json
+
+{
+  //Technician
+}
 
 ###
